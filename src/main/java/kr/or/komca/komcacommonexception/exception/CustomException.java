@@ -1,17 +1,15 @@
 package kr.or.komca.komcacommonexception.exception;
 
-import kr.or.komca.komcacommonexception.error.ErrorCode;
+import kr.or.komca.komcacommonexception.code.CommonErrorCode;
+import kr.or.komca.komcacommonexception.code.ErrorCode;
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
 
 @Getter
 public abstract class CustomException extends RuntimeException {
-    private final HttpStatus status;
-    private final String errorCode;
+    private final ErrorCode errorCode;
 
-    public CustomException(ErrorCode error) {
-        super(error.getCode());
-        this.status = error.getStatus();
-        this.errorCode = error.getCode();
+    public CustomException(ErrorCode errorCode) {
+        super(errorCode.getCode());
+        this.errorCode = errorCode;
     }
 }

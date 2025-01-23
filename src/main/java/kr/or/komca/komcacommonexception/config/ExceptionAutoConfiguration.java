@@ -1,6 +1,6 @@
 package kr.or.komca.komcacommonexception.config;
 
-import kr.or.komca.komcacommonexception.handler.GlobalExceptionHandler;
+import kr.or.komca.komcacommonexception.handler.BaseGlobalExceptionHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 public class ExceptionAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
-    public GlobalExceptionHandler globalExceptionHandler() {
-        return new GlobalExceptionHandler();
+    public BaseGlobalExceptionHandler globalExceptionHandler() {
+        return new BaseGlobalExceptionHandler();
     }
 }
