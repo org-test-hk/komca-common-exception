@@ -6,15 +6,20 @@ import kr.or.komca.komcacommonexception.dto.ErrorResponse;
 import kr.or.komca.komcacommonexception.exception.CustomException;
 
 import lombok.extern.log4j.Log4j2;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @Log4j2
+@RestControllerAdvice
+@Order(Ordered.LOWEST_PRECEDENCE) // 가장 낮은 우선순위
 public class BaseGlobalExceptionHandler {
 
     @ExceptionHandler(CustomException.class)
