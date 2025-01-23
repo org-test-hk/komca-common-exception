@@ -1,7 +1,6 @@
 package kr.or.komca.komcacommonexception.dto;
 
-import kr.or.komca.komcacommonexception.code.ErrorCode;
-import kr.or.komca.komcadatacore.dto.common.BaseResponse;
+import kr.or.komca.komcacommonexception.response_code.ErrorCode;
 import lombok.Getter;
 import org.springframework.http.ResponseEntity;
 
@@ -31,7 +30,8 @@ import java.util.Map;
 @Getter
 public class ErrorResponse extends BaseResponse<Void> {
     private ErrorResponse(ErrorCode errorCode, Object errorDetail) {
-        super(errorCode.getStatus().value(), errorCode.getCode(), null, errorDetail);
+        super(errorCode, null, errorDetail);
+
     }
 
     public static ResponseEntity<BaseResponse<Void>> of(ErrorCode errorCode) {

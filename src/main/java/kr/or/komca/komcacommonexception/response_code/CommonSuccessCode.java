@@ -1,4 +1,4 @@
-package kr.or.komca.komcacommonexception.code;
+package kr.or.komca.komcacommonexception.response_code;
 
 
 import lombok.Getter;

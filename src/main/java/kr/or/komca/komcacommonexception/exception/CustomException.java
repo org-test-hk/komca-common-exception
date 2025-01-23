@@ -1,7 +1,7 @@
 package kr.or.komca.komcacommonexception.exception;
 
 
-import kr.or.komca.komcacommonexception.code.ErrorCode;
+import kr.or.komca.komcacommonexception.response_code.ErrorCode;
 import lombok.Getter;
 
 @Getter

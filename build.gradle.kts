@@ -34,8 +34,8 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-jackson:0.12.3")  // runtimeOnly -> implementation
 
     // DB
-    runtimeOnly("com.oracle.database.jdbc:ojdbc11:21.9.0.0")  // Oracle 21c에 적합한 ojdbc11 버전
-    implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3")
+//    runtimeOnly("com.oracle.database.jdbc:ojdbc11:21.9.0.0")  // Oracle 21c에 적합한 ojdbc11 버전
+//    implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3")
 
     // Spring AOP
     implementation("org.springframework.boot:spring-boot-starter-aop")
@@ -46,10 +46,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
     // BOM 임포트
-    implementation(platform("kr.or.komca:dependencies-bom:0.2.0"))
-
-    // komca 라이브러리
-    implementation("kr.or.komca:komca-data-core:0.0.1-SNAPSHOT")
+//    implementation(platform("kr.or.komca:dependencies-bom:0.2.0"))
 
 
 }

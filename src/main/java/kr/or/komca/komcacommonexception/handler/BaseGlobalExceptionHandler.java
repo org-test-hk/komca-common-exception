@@ -1,15 +1,15 @@
 package kr.or.komca.komcacommonexception.handler;
 
-import kr.or.komca.komcacommonexception.code.CommonErrorCode;
+import kr.or.komca.komcacommonexception.dto.BaseResponse;
+import kr.or.komca.komcacommonexception.response_code.CommonErrorCode;
 import kr.or.komca.komcacommonexception.dto.ErrorResponse;
 import kr.or.komca.komcacommonexception.exception.CustomException;
-import kr.or.komca.komcadatacore.dto.common.BaseResponse;
+
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Map;
 import java.util.stream.Collectors;
