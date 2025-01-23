@@ -1,6 +1,5 @@
 package kr.or.komca.komcacommonexception.dto;
 
-import kr.or.komca.komcacommonexception.code.CommonErrorCode;
 import kr.or.komca.komcacommonexception.code.ErrorCode;
 import kr.or.komca.komcadatacore.dto.common.BaseResponse;
 import lombok.Getter;
