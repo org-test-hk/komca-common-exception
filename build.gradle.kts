@@ -1,5 +1,6 @@
 plugins {
     java
+    id("java-library")
     id("org.springframework.boot") version "3.2.11"
     id("io.spring.dependency-management") version "1.1.6"
     id("maven-publish")
@@ -48,6 +49,9 @@ dependencies {
     // BOM 임포트
 //    implementation(platform("kr.or.komca:dependencies-bom:0.2.0"))
 
+    api("kr.or.komca:interface:0.1.0")
+
+//    implementation("kr.or.komca:interface:0.0.1-SNAPSHOT")
 
 }
 
@@ -94,9 +98,19 @@ repositories {
     mavenLocal()    // Local 테스트 용
 
     // BOM
+//    maven {
+//        name = "GitHubPackages-bom"
+//        url = uri("https://maven.pkg.github.com/org-test-hk/dependencies-bom")
+//        credentials {
+//            username = System.getenv("GITHUB_ACTOR") ?: project.findProperty("gpr.user") as String? ?: ""
+//            password = System.getenv("GITHUB_TOKEN") ?: project.findProperty("gpr.key") as String? ?: ""
+//        }
+//    }
+
+    // BOM
     maven {
         name = "GitHubPackages-bom"
-        url = uri("https://maven.pkg.github.com/org-test-hk/dependencies-bom")
+        url = uri("https://maven.pkg.github.com/org-test-hk/komca-common-interface")
         credentials {
             username = System.getenv("GITHUB_ACTOR") ?: project.findProperty("gpr.user") as String? ?: ""
             password = System.getenv("GITHUB_TOKEN") ?: project.findProperty("gpr.key") as String? ?: ""
