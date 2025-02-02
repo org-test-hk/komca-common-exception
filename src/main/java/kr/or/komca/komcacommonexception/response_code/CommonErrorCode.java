@@ -8,9 +8,10 @@ import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor
 public enum CommonErrorCode implements ErrorCode {
-    BAD_REQUEST("ERROR_400", HttpStatus.BAD_REQUEST),
-    UNAUTHORIZED("ERROR_401", HttpStatus.UNAUTHORIZED),
-    NOT_FOUND("ERROR_404", HttpStatus.NOT_FOUND);
+    BAD_REQUEST("BAD_REQUEST", HttpStatus.BAD_REQUEST),
+    UNAUTHORIZED("UNAUTHORIZED", HttpStatus.UNAUTHORIZED),
+    NOT_FOUND("NOT_FOUND", HttpStatus.NOT_FOUND),
+    INTERNAL_SERVER_ERROR("INTERNAL_SERVER_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
 
     private final String code;
     private final HttpStatus status;

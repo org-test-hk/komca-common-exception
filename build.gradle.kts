@@ -49,9 +49,9 @@ dependencies {
     // BOM 임포트
 //    implementation(platform("kr.or.komca:dependencies-bom:0.2.0"))
 
-    api("kr.or.komca:interface:0.1.0")
+    api("kr.or.komca:interface:0.2.0")
 
-//    implementation("kr.or.komca:interface:0.0.1-SNAPSHOT")
+//    api("kr.or.komca:interface:0.0.1-SNAPSHOT")
 
 }
 
@@ -107,7 +107,7 @@ repositories {
 //        }
 //    }
 
-    // BOM
+    // Interface
     maven {
         name = "GitHubPackages-bom"
         url = uri("https://maven.pkg.github.com/org-test-hk/komca-common-interface")

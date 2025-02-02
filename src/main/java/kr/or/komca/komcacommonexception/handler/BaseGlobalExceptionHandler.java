@@ -15,6 +15,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -26,23 +28,49 @@ public class BaseGlobalExceptionHandler {
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<BaseResponse<Void>> handleCustomException(CustomException ex) {
         log.error("Custom error: {}", ex.getErrorCode().getCode());
-        return ErrorResponse.of(ex.getErrorCode());
+        // 기본 에러 정보만 전달
+        BaseResponse.ErrorDetail errorDetail = BaseResponse.ErrorDetail.builder()
+                .code(ex.getErrorCode().getCode())
+                .build();
+
+        return ErrorResponse.of(ex.getErrorCode(), List.of(errorDetail));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<BaseResponse<Void>> handleValidationExceptions(
             MethodArgumentNotValidException ex) {
-        Map<String, String> errors = ex.getBindingResult()
+        List<BaseResponse.ErrorDetail> errorDetails = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
-                .collect(Collectors.toMap(
-                        FieldError::getField,
-                        FieldError::getDefaultMessage,
-                        (existing, replacement) -> existing
-                ));
+                .map(error -> {
+                    Map<String, Object> params = new HashMap<>();
+                    // 제약조건 관련 파라미터가 있는 경우 처리
+                    if (error.getArguments() != null && error.getArguments().length > 1) {
+                        params.put("rejectedValue", error.getRejectedValue());
+                    }
 
-        log.error("Validation error: {}", errors);
-        return ErrorResponse.of(CommonErrorCode.BAD_REQUEST, errors);
+                    return BaseResponse.ErrorDetail.builder()
+                            .field(error.getField())
+                            .code(error.getDefaultMessage())
+                            .value(error.getRejectedValue())
+                            .params(!params.isEmpty() ? params : null)
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        log.error("Validation error: {}", errorDetails);
+        return ErrorResponse.of(CommonErrorCode.BAD_REQUEST, errorDetails);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<BaseResponse<Void>> handleException(Exception ex) {
+        log.error("Unexpected error occurred: ", ex);
+
+        BaseResponse.ErrorDetail errorDetail = BaseResponse.ErrorDetail.builder()
+                .code("INTERNAL_SERVER_ERROR")
+                .build();
+
+        return ErrorResponse.of(CommonErrorCode.INTERNAL_SERVER_ERROR, List.of(errorDetail));
     }
 
 }
