@@ -49,7 +49,7 @@ dependencies {
     // BOM 임포트
 //    implementation(platform("kr.or.komca:dependencies-bom:0.2.0"))
 
-    api("kr.or.komca:interface:0.2.0")
+    implementation("kr.or.komca:interface:0.2.1")
 
 //    api("kr.or.komca:interface:0.0.1-SNAPSHOT")
 
