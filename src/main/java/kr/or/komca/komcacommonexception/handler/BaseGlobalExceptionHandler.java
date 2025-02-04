@@ -5,6 +5,7 @@ import kr.or.komca.komcacommonexception.dto.CommonErrorResponse;
 import kr.or.komca.komcacommonexception.exception.CustomException;
 import kr.or.komca.komcacommonexception.response_code.CommonErrorCode;
 import kr.or.komca.komcacommoninterface.dto.BaseResponse;
+import kr.or.komca.komcacommoninterface.response_code.ErrorCode;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -23,21 +24,33 @@ import java.util.stream.Collectors;
 @Order(Ordered.LOWEST_PRECEDENCE) // 가장 낮은 우선순위
 public class BaseGlobalExceptionHandler {
 
-    @ExceptionHandler(CustomException.class)
-    public ResponseEntity<BaseResponse> handleCustomException(CustomException ex) {
-        log.error("Custom error: {}", ex.getErrorCode().getCode());
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<BaseResponse> handleLowestException(Exception e) {
+        log.error("unknown error: {} | {}", CommonErrorCode.INTERNAL_SERVER_ERROR, e);
         // 기본 에러 정보만 전달
         CommonErrorResponse.ErrorDetail errorDetail = CommonErrorResponse.ErrorDetail.builder()
-                .code(ex.getErrorCode().getCode())
+//                .code(CommonErrorCode.INTERNAL_SERVER_ERROR.getCode())
+                .value(e.getMessage()) // 임시 메시지 필드
                 .build();
 
-        return CommonErrorResponse.of(ex.getErrorCode(), List.of(errorDetail));
+        return CommonErrorResponse.of(CommonErrorCode.INTERNAL_SERVER_ERROR, List.of(errorDetail));
+    }
+
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<BaseResponse> handleCustomException(CustomException e) {
+        log.error("Custom error: {} | {}", e.getErrorCode().getCode(), e);
+        // 기본 에러 정보만 전달
+        CommonErrorResponse.ErrorDetail errorDetail = CommonErrorResponse.ErrorDetail.builder()
+                .code(e.getErrorCode().getCode())
+                .build();
+
+        return CommonErrorResponse.of(e.getErrorCode(), List.of(errorDetail));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<BaseResponse> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
-        List<CommonErrorResponse.ErrorDetail> errorDetails = ex.getBindingResult()
+            MethodArgumentNotValidException e) {
+        List<CommonErrorResponse.ErrorDetail> errorDetails = e.getBindingResult()
                 .getFieldErrors()
                 .stream()
                 .map(error -> {

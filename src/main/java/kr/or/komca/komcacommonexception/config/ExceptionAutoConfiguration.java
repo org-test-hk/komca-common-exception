@@ -8,16 +8,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConditionalOnProperty(
-        prefix = "komca.exception",
-        name = "enabled",
-        havingValue = "true",
-        matchIfMissing = false
-)
 public class ExceptionAutoConfiguration {
 
-    @Bean
-    public BaseGlobalExceptionHandler BaseGlobalExceptionHandler() {
-        return new BaseGlobalExceptionHandler();
-    }
+//    @Bean
+//    public BaseGlobalExceptionHandler BaseGlobalExceptionHandler() {
+//        return new BaseGlobalExceptionHandler();
+//    }
 }
