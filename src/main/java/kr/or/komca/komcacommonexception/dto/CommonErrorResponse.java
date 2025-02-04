@@ -62,10 +62,5 @@ public class CommonErrorResponse extends BaseResponse {
         private final Object value;        // 실제 입력값 (옵션)
         private final Map<String, Object> params;  // 부가 정보를 위한 유연한 구조
     }
-
-    @Override
-    public ResponseEntity<CommonErrorResponse> toResponseEntity() {
-        return ResponseEntity.status(this.statusCode).body(this);
-    }
 }
 

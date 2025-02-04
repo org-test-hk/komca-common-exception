@@ -14,20 +14,21 @@ public class SuccessResponse<T> extends BaseResponse {
         this.data = data;
     }
 
-    public static <T> SuccessResponse<T> ok(T data) {
-        return new SuccessResponse<>(HttpStatus.OK, data);
+    public static <T> ResponseEntity<SuccessResponse<T>> ok(T data) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new SuccessResponse<>(HttpStatus.OK, data));
     }
 
-    public static <T> SuccessResponse<T> created(T data) {
-        return new SuccessResponse<>(HttpStatus.CREATED, data);
+    public static <T> ResponseEntity<SuccessResponse<T>> created(T data) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(new SuccessResponse<>(HttpStatus.CREATED, data));
     }
 
-    public static <T> SuccessResponse<T> of(HttpStatus status, T data) {
-        return new SuccessResponse<>(status, data);
-    }
-
-    @Override
-    public ResponseEntity<SuccessResponse<T>> toResponseEntity() {
-        return ResponseEntity.status(this.statusCode).body(this);
+    public static <T> ResponseEntity<SuccessResponse<T>> of(HttpStatus status, T data) {
+        return ResponseEntity
+                .status(status)
+                .body(new SuccessResponse<>(status, data));
     }
 }

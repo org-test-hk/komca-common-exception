@@ -29,11 +29,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
 
-    // JWT
-    implementation("io.jsonwebtoken:jjwt-api:0.12.3")
-    implementation("io.jsonwebtoken:jjwt-impl:0.12.3")  // runtimeOnly -> implementation
-    implementation("io.jsonwebtoken:jjwt-jackson:0.12.3")  // runtimeOnly -> implementation
-
     // DB
 //    runtimeOnly("com.oracle.database.jdbc:ojdbc11:21.9.0.0")  // Oracle 21c에 적합한 ojdbc11 버전
 //    implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3")
@@ -49,7 +44,7 @@ dependencies {
     // BOM 임포트
 //    implementation(platform("kr.or.komca:dependencies-bom:0.2.0"))
 
-    implementation("kr.or.komca:interface:0.2.1")
+    implementation("kr.or.komca:interface:0.2.2")
 
 //    api("kr.or.komca:interface:0.0.1-SNAPSHOT")
 
