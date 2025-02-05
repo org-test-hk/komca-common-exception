@@ -1,19 +1,21 @@
 package kr.or.komca.komcacommonexception.handler;
 
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import kr.or.komca.komcacommonexception.dto.CommonErrorResponse;
 import kr.or.komca.komcacommonexception.exception.CustomException;
 import kr.or.komca.komcacommonexception.response_code.CommonErrorCode;
 import kr.or.komca.komcacommoninterface.dto.BaseResponse;
-import kr.or.komca.komcacommoninterface.response_code.ErrorCode;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,19 +26,8 @@ import java.util.stream.Collectors;
 @Order(Ordered.LOWEST_PRECEDENCE) // 가장 낮은 우선순위
 public class BaseGlobalExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<BaseResponse> handleLowestException(Exception e) {
-        log.error("unknown error: {} | {}", CommonErrorCode.INTERNAL_SERVER_ERROR, e);
-        // 기본 에러 정보만 전달
-        CommonErrorResponse.ErrorDetail errorDetail = CommonErrorResponse.ErrorDetail.builder()
-//                .code(CommonErrorCode.INTERNAL_SERVER_ERROR.getCode())
-                .value(e.getMessage()) // 임시 메시지 필드
-                .build();
 
-        return CommonErrorResponse.of(CommonErrorCode.INTERNAL_SERVER_ERROR, List.of(errorDetail));
-    }
-
-    @ExceptionHandler(CustomException.class)
+    @ExceptionHandler({CustomException.class})
     public ResponseEntity<BaseResponse> handleCustomException(CustomException e) {
         log.error("Custom error: {} | {}", e.getErrorCode().getCode(), e);
         // 기본 에러 정보만 전달
@@ -47,7 +38,7 @@ public class BaseGlobalExceptionHandler {
         return CommonErrorResponse.of(e.getErrorCode(), List.of(errorDetail));
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler({MethodArgumentNotValidException.class})
     public ResponseEntity<BaseResponse> handleValidationExceptions(
             MethodArgumentNotValidException e) {
         List<CommonErrorResponse.ErrorDetail> errorDetails = e.getBindingResult()
@@ -73,15 +64,30 @@ public class BaseGlobalExceptionHandler {
         return CommonErrorResponse.of(CommonErrorCode.BAD_REQUEST, errorDetails);
     }
 
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<BaseResponse> handleException(Exception ex) {
-//        log.error("Unexpected error occurred: ", ex);
-//
-//        CommonErrorResponse.ErrorDetail errorDetail = CommonErrorResponse.ErrorDetail.builder()
-//                .code("INTERNAL_SERVER_ERROR")
-//                .build();
-//
-//        return CommonErrorResponse.of(CommonErrorCode.INTERNAL_SERVER_ERROR, List.of(errorDetail));
-//    }
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<BaseResponse> handleHttpMessageNotReadable(HttpMessageNotReadableException e) {
+        String message = "잘못된 입력 형식입니다.";
 
+        // LocalDate 파싱 에러인 경우 더 구체적인 메시지 제공
+        if (e.getCause() instanceof InvalidFormatException) {
+            InvalidFormatException ife = (InvalidFormatException) e.getCause();
+            if (ife.getTargetType() == LocalDate.class) {
+                message = "날짜 형식이 올바르지 않습니다. yyyy-MM-dd 형식으로 입력해주세요.";
+            }
+        }
+
+        CommonErrorResponse.ErrorDetail errorDetail = CommonErrorResponse.ErrorDetail.builder()
+                .value(message)
+                .build();
+
+        return CommonErrorResponse.of(CommonErrorCode.BAD_REQUEST, List.of(errorDetail));
+    }
+
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<BaseResponse> handleLowestException(Exception e) {
+        log.error("Unexpected error occurred: {} | {}", CommonErrorCode.INTERNAL_SERVER_ERROR, e);
+
+        return CommonErrorResponse.from(CommonErrorCode.INTERNAL_SERVER_ERROR);
+    }
 }
