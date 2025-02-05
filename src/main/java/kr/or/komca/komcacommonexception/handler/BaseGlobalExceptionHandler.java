@@ -6,6 +6,7 @@ import kr.or.komca.komcacommonexception.dto.CommonErrorResponse;
 import kr.or.komca.komcacommonexception.exception.CustomException;
 import kr.or.komca.komcacommonexception.response_code.CommonErrorCode;
 import kr.or.komca.komcacommoninterface.dto.BaseResponse;
+import kr.or.komca.komcacommoninterface.response_code.ErrorCode;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -35,7 +36,7 @@ public class BaseGlobalExceptionHandler {
                 .code(e.getErrorCode().getCode())
                 .build();
 
-        return CommonErrorResponse.of(e.getErrorCode(), List.of(errorDetail));
+        return CommonErrorResponse.of(e.getErrorCode(), errorDetail);
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
@@ -45,17 +46,11 @@ public class BaseGlobalExceptionHandler {
                 .getFieldErrors()
                 .stream()
                 .map(error -> {
-                    Map<String, Object> params = new HashMap<>();
                     // 제약조건 관련 파라미터가 있는 경우 처리
-                    if (error.getArguments() != null && error.getArguments().length > 1) {
-                        params.put("rejectedValue", error.getRejectedValue());
-                    }
-
                     return CommonErrorResponse.ErrorDetail.builder()
                             .field(error.getField())
                             .code(error.getDefaultMessage())
                             .value(error.getRejectedValue())
-                            .params(!params.isEmpty() ? params : null)
                             .build();
                 })
                 .collect(Collectors.toList());
@@ -66,21 +61,18 @@ public class BaseGlobalExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<BaseResponse> handleHttpMessageNotReadable(HttpMessageNotReadableException e) {
-        String message = "잘못된 입력 형식입니다.";
+
+        ErrorCode errorCode = CommonErrorCode.INVALID_FORMAT;
 
         // LocalDate 파싱 에러인 경우 더 구체적인 메시지 제공
         if (e.getCause() instanceof InvalidFormatException) {
             InvalidFormatException ife = (InvalidFormatException) e.getCause();
             if (ife.getTargetType() == LocalDate.class) {
-                message = "날짜 형식이 올바르지 않습니다. yyyy-MM-dd 형식으로 입력해주세요.";
+                errorCode = CommonErrorCode.INVALID_DATE_FORMAT;
             }
         }
 
-        CommonErrorResponse.ErrorDetail errorDetail = CommonErrorResponse.ErrorDetail.builder()
-                .value(message)
-                .build();
-
-        return CommonErrorResponse.of(CommonErrorCode.BAD_REQUEST, List.of(errorDetail));
+        return CommonErrorResponse.from(errorCode);
     }
 
 

@@ -33,20 +33,17 @@ public class CommonErrorResponse extends BaseResponse {
                 .body(new CommonErrorResponse(errorCode, errorDetails));
     }
 
-    public static ResponseEntity<BaseResponse> of(ErrorCode errorCode, String field, String code) {
-        ErrorDetail errorDetail = ErrorDetail.builder()
-                .field(field)
-                .code(code)
-                .build();
-
-        return of(errorCode, List.of(errorDetail));
+    public static ResponseEntity<BaseResponse> of(ErrorCode errorCode, ErrorDetail errorDetails) {
+        return ResponseEntity
+                .status(errorCode.getStatus())
+                .body(new CommonErrorResponse(errorCode, List.of(errorDetails)));
     }
 
-    public static ResponseEntity<BaseResponse> of(ErrorCode errorCode, String field, String code, Map<String, Object> params) {
+    public static ResponseEntity<BaseResponse> of(ErrorCode errorCode, String field, String code, String message) {
         ErrorDetail errorDetail = ErrorDetail.builder()
                 .field(field)
                 .code(code)
-                .params(params)
+                .message(message)
                 .build();
 
         return of(errorCode, List.of(errorDetail));
@@ -60,7 +57,7 @@ public class CommonErrorResponse extends BaseResponse {
         private final String field;        // 에러 발생 필드
         private final String code;         // 에러 상세 코드
         private final Object value;        // 실제 입력값 (옵션)
-        private final Map<String, Object> params;  // 부가 정보를 위한 유연한 구조
+        private final String message;
     }
 }
 
