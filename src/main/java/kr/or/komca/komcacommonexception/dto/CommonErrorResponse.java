@@ -2,13 +2,12 @@ package kr.or.komca.komcacommonexception.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import kr.or.komca.komcacommoninterface.dto.BaseResponse;
-import kr.or.komca.komcacommoninterface.response_code.ErrorCode;
+import kr.or.komca.komcacommoninterface.errorcode.ErrorCode;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
-import java.util.Map;
 
 @Getter
 public class CommonErrorResponse extends BaseResponse {
@@ -21,7 +20,7 @@ public class CommonErrorResponse extends BaseResponse {
         this.code = errorCode.getCode();
     }
 
-    public static ResponseEntity<BaseResponse> from(ErrorCode errorCode) {
+    public static ResponseEntity<BaseResponse> of(ErrorCode errorCode) {
         return ResponseEntity
                 .status(errorCode.getStatus())
                 .body(new CommonErrorResponse(errorCode, null));
@@ -39,16 +38,6 @@ public class CommonErrorResponse extends BaseResponse {
                 .body(new CommonErrorResponse(errorCode, List.of(errorDetails)));
     }
 
-    public static ResponseEntity<BaseResponse> of(ErrorCode errorCode, String field, String code, String message) {
-        ErrorDetail errorDetail = ErrorDetail.builder()
-                .field(field)
-                .code(code)
-                .message(message)
-                .build();
-
-        return of(errorCode, List.of(errorDetail));
-    }
-
 
     @Getter
     @Builder
@@ -57,7 +46,6 @@ public class CommonErrorResponse extends BaseResponse {
         private final String field;        // 에러 발생 필드
         private final String code;         // 에러 상세 코드
         private final Object value;        // 실제 입력값 (옵션)
-        private final String message;
     }
 }
 

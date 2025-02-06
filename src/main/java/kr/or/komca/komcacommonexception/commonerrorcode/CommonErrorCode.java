@@ -1,6 +1,6 @@
-package kr.or.komca.komcacommonexception.response_code;
+package kr.or.komca.komcacommonexception.commonerrorcode;
 
-import kr.or.komca.komcacommoninterface.response_code.ErrorCode;
+import kr.or.komca.komcacommoninterface.errorcode.ErrorCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

@@ -3,10 +3,11 @@ package kr.or.komca.komcacommonexception.handler;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import kr.or.komca.komcacommonexception.dto.CommonErrorResponse;
-import kr.or.komca.komcacommonexception.exception.CustomException;
-import kr.or.komca.komcacommonexception.response_code.CommonErrorCode;
+import kr.or.komca.komcacommonexception.commonerrorcode.CommonErrorCode;
 import kr.or.komca.komcacommoninterface.dto.BaseResponse;
-import kr.or.komca.komcacommoninterface.response_code.ErrorCode;
+import kr.or.komca.komcacommoninterface.exception.KomcaFieldException;
+import kr.or.komca.komcacommoninterface.errorcode.ErrorCode;
+import kr.or.komca.komcacommoninterface.exception.KomcaNonFieldException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -17,9 +18,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Log4j2
@@ -28,8 +27,20 @@ import java.util.stream.Collectors;
 public class BaseGlobalExceptionHandler {
 
 
-    @ExceptionHandler({CustomException.class})
-    public ResponseEntity<BaseResponse> handleCustomException(CustomException e) {
+    @ExceptionHandler(KomcaFieldException.class)
+    public ResponseEntity<BaseResponse> handleBaseFieldException(KomcaFieldException e) {
+        log.error("Custom error: {} | {}", e.getErrorCode().getCode(), e);
+        // 기본 에러 정보만 전달
+        CommonErrorResponse.ErrorDetail errorDetail = CommonErrorResponse.ErrorDetail.builder()
+                .code(e.getErrorCode().getCode())
+                .build();
+
+        return CommonErrorResponse.of(e.getErrorCode(), errorDetail);
+    }
+
+    // TODO: 구현 필요
+    @ExceptionHandler(KomcaNonFieldException.class)
+    public ResponseEntity<BaseResponse> handleBaseNonFieldException(KomcaNonFieldException e) {
         log.error("Custom error: {} | {}", e.getErrorCode().getCode(), e);
         // 기본 에러 정보만 전달
         CommonErrorResponse.ErrorDetail errorDetail = CommonErrorResponse.ErrorDetail.builder()
@@ -72,7 +83,7 @@ public class BaseGlobalExceptionHandler {
             }
         }
 
-        return CommonErrorResponse.from(errorCode);
+        return CommonErrorResponse.of(errorCode);
     }
 
 
@@ -80,6 +91,6 @@ public class BaseGlobalExceptionHandler {
     public ResponseEntity<BaseResponse> handleLowestException(Exception e) {
         log.error("Unexpected error occurred: {} | {}", CommonErrorCode.INTERNAL_SERVER_ERROR, e);
 
-        return CommonErrorResponse.from(CommonErrorCode.INTERNAL_SERVER_ERROR);
+        return CommonErrorResponse.of(CommonErrorCode.INTERNAL_SERVER_ERROR);
     }
 }
